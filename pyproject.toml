@@ -1,0 +1,47 @@
+[build-system]
+requires = ["setuptools>=77.0.3", "wheel" ]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "coatlorm"
+version = "0.1.0"
+requires-python = ">=3.12"
+authors = [{ name = "Anagh Phanse", email = "anaghphanse@gmail.com" }]
+description = "A base framework for a plug-and-play ORM"
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE.txt"]
+keywords = ["orm", "sql", "python"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+
+    "Framework :: AsyncIO",
+
+    "Intended Audience :: Developers",
+
+
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+
+    "Topic :: Database",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[project.optional-dependencies]
+dev = ["tox"]
+
+[project.urls]
+Repository = "https://github.com/anaphan1/coatlorm.git"
+Issues = "https://github.com/anaphan1/coatlorm/issues"
+
+[tool.setuptools_scm]
+fallback_version = "0.0.1"
+version_scheme = "post-release"
+local_scheme = "no-local-version"
