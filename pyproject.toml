@@ -85,6 +85,7 @@ description = "Run pytest with coverage"
 usedevelop = true
 deps = [
     "pytest",
+    "pytest-asyncio",
     "pytest-cov",
 ]
 commands = [
