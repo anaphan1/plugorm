@@ -99,4 +99,4 @@ async with driver as db:
 
 ## 📃 Documentation
 
-For more information, read the [https://plugorm.readthedocs.io/](documentation).
+For more information, read the [documentation](https://plugorm.readthedocs.io/).
