@@ -96,3 +96,7 @@ If a driver only supports sync, but you build an async toolchain, you can enable
 async with driver as db:
     result = await db.getall()
 ```
+
+## 📃 Documentation
+
+For more information, read the (documentation)[https://plugorm.readthedocs.io/].
