@@ -25,7 +25,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           python -m pip install -e .
-          python -m pip install pytest pytest-cov
+          python -m pip install pytest pytest-cov pytest-asyncio
 
       - name: Test with pytest
         run: |
@@ -36,7 +36,7 @@ jobs:
     needs: test
     strategy:
       matrix:
-        python-version: ["3.11"]
+        python-version: ["3.13"]
 
     steps:
       - uses: actions/checkout@v4
@@ -49,12 +49,12 @@ jobs:
       - name: Install dev dependencies
         run: |
           python -m pip install --upgrade pip
-          python -m pip install flake8 mypy black
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          python -m pip install -e .
+          python -m pip install "flake8>=6.0" mypy black
 
       - name: Lint with flake8
         run: |
-          flake8 src/ tests/
+          flake8 src/ tests/ --max-line-length=88 --extend-ignore=E203,W503,E501
 
       - name: Type check with mypy
         run: |
