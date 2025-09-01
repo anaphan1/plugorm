@@ -38,9 +38,10 @@ methods in a thread when ``fallback=True``.
 Creating a Surface Driver
 -------------------------
 
-A ``SurfaceDriver`` converts the dialect either to raw SQL or to an internal language. User-facing methods are decorated with @SurfaceDriver.dialect or SurfaceDriver.adialect for sync and async versions respectively.
+A ``SurfaceDriver`` converts the dialect either to raw SQL or to an internal language. User-facing methods are decorated with ``SurfaceDriver.dialect`` or ``SurfaceDriver.adialect`` for sync and async versions respectively.
 
 .. code-block:: python
+
     from plugorm import SurfaceDriver
 
     class MySurfaceDriver(SurfaceDriver):
@@ -59,11 +60,10 @@ A ``SurfaceDriver`` converts the dialect either to raw SQL or to an internal lan
 Creating an IL Driver
 --------------------
 
-An `ILDriver` converts your internal language into SQL or another backend dialect.
-
-Example:
+An ``ILDriver`` converts your internal language into SQL or another backend dialect.
 
 .. code-block:: python
+
     from plugorm import ILDriver
 
     class MyILDriver(ILDriver):
@@ -85,6 +85,7 @@ Creating a Connection Driver
 A ``ConnectionDriver`` manages database connections to your database and executes queries
 
 .. code-block:: python
+
     from plugorm import ConnectionDriver
 
     class MyConnDriver(ConnectionDriver):
@@ -111,6 +112,7 @@ A ``Simplifier`` converts your cursor or some low-level form of data to a high-l
 Example:
 
 .. code-block:: python
+
     from plugorm import Simplifier
 
     class MySimplifier(Simplifier):
