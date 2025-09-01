@@ -51,10 +51,10 @@ A ``SurfaceDriver`` converts the dialect either to raw SQL or to an internal lan
 
         @SurfaceDriver.dialect
         def get_all(self):
-           return [i for i in self.db.tables.select()] # Example implementation
+            return [i for i in self.db.tables.select()] # Example implementation
 
         @SurfaceDriver.adialect
-        async def aget_all(self)
+        async def aget_all(self):
             return [i for i in await self.db.tables.aselect()]
 
 Creating an IL Driver
@@ -94,9 +94,7 @@ A ``ConnectionDriver`` manages database connections to your database and execute
         output = {"sqlite_cursor"}
 
         def connect(self): ... # Connect to database instance
-
         def execute(self, statement: str): ... # Execute a statement
-
         def close(self): ... # Close database instance
 
         # Optional async versions of above 3 methods
@@ -108,8 +106,6 @@ Creating a Simplifier
 --------------------
 
 A ``Simplifier`` converts your cursor or some low-level form of data to a high-level one
-
-Example:
 
 .. code-block:: python
 
