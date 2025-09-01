@@ -71,6 +71,9 @@ venv.bak/
 *.sqlite3
 *.db
 
+# generated version files
+src/plugorm/_version.py
+
 # macOS
 .DS_Store
 

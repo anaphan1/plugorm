@@ -20,6 +20,7 @@ simplification issues. It also includes validation and synchronous/asynchronous 
     Raised when sync execution is attempted but not supported.
 """
 
+
 class LinkValidationError(ValueError):
     """Exception raised when toolchain step linkage is invalid.
 
@@ -32,6 +33,7 @@ class LinkValidationError(ValueError):
         input_ (set[str]): The set of required input types for the target step.
         output (set[str]): The set of output types produced by the source step.
     """
+
     def __init__(
         self,
         source: str,
@@ -56,12 +58,12 @@ class LinkValidationError(ValueError):
         )
 
 
-class ILParsingError(RuntimeError):
-    """Raised when parsing the internal language (IL) fails."""
-
-
 class DialectParsingError(RuntimeError):
     """Raised when translating dialect into an internal language (IL) dialect fails."""
+
+
+class ILParsingError(RuntimeError):
+    """Raised when parsing the internal language (IL) fails."""
 
 
 class ExecutionError(RuntimeError):

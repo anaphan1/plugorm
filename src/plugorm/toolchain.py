@@ -35,26 +35,26 @@ class Step:
         driver (Driver): The driver associated with this step.
     """
 
-    def __init__(self) -> None:
-        """Initializes the Step and assigns its driver.
+    driver: Driver
 
-        Automatically selects the appropriate driver from the instance attributes: `il_driver`, `conn_driver`, or
-            `simplifier`.
-        """
-        self.driver = self.get_driver()
-
-    def get_driver(self) -> Driver:
+    def get_driver(self) -> None:
         """Retrieves the associated driver for this step.
 
         Cycles through possible names for the driver to retrieve the associated driver for this step.
 
         Returns:
-            Driver: The driver instance linked to this step. Selection order is: `il_driver`, then `conn_driver`, then
+            Driver: The driver instance linked to this step. Selection order is: `il_driver`, then `connection_driver`, then
                 `simplifier`.
         """
-        return getattr(
-            self, "il_driver", getattr(self, "conn_driver", getattr(self, "simplifier"))
+        driver = getattr(
+            self,
+            "il_driver",
+            getattr(self, "connection_driver", getattr(self, "simplifier", None)),
         )
+        if driver is not None:
+            self.driver = driver
+        else:
+            raise AttributeError("No driver associated with this step.")
 
     def __repr__(self) -> str:
         """Return a string representation of the Step.
@@ -85,9 +85,9 @@ class ILStep(Step, _LoggerMixin):
             il_driver (ILDriver): The internal language driver to be wrapped by this step.
             logger (logging.Logger): Logger instance used for debug and info messages within this step.
         """
-        super().__init__()
         self.il_driver = il_driver
         self.logger = logger
+        self.get_driver()
 
     def step(self, input_: Any) -> str:
         """Synchronously parses input using the internal language driver.
@@ -154,9 +154,9 @@ class ConnectionStep(Step, _LoggerMixin):
             connection_driver (ConnectionDriver): The connection driver to be wrapped by this step.
             logger (logging.Logger): Logger instance used for debug and info messages within this step.
         """
-        super().__init__()
         self.connection_driver = connection_driver
         self.logger = logger
+        self.get_driver()
 
     def step(self, input_: str) -> Any:
         """Synchronously executes a statement using the connection driver.
@@ -223,9 +223,9 @@ class SimplifierStep(Step, _LoggerMixin):
             simplifier (Simplifier): The simplifier to be wrapped by this step.
             logger (logging.Logger): Logger instance used for debug and info messages within this step.
         """
-        super().__init__()
         self.simplifier = simplifier
         self.logger = logger
+        self.get_driver()
 
     def step(self, input_: Any) -> Any:
         """Synchronously simplifies input using the simplifier.

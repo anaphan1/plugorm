@@ -18,6 +18,6 @@ This module exposes the main components, including the core SurfaceDriver, drive
 
 from .core import SurfaceDriver
 from .drivers import ILDriver, ConnectionDriver, Simplifier
-from ._version import version as __version__
+from ._version import __version__
 
 __all__ = ["SurfaceDriver", "ILDriver", "ConnectionDriver", "Simplifier", "__version__"]

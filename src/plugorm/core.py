@@ -9,7 +9,6 @@ SurfaceDriver:
 
 import asyncio
 import logging
-from abc import ABC
 from collections.abc import Callable, Awaitable
 from functools import wraps
 from typing import Any
@@ -25,7 +24,7 @@ from .toolchain import ILStep, ConnectionStep, SimplifierStep, Step
 from .utils import short_repr
 
 
-class SurfaceDriver(Driver, ABC):
+class SurfaceDriver(Driver):
     """Abstract base class for a surface driver managing multiple components.
 
     A ``SurfaceDriver`` orchestrates the execution of connected drivers, including a mandatory connection driver, an
@@ -78,6 +77,9 @@ class SurfaceDriver(Driver, ABC):
         self.simplifier = simplifier
         self.logger = logger or logging.getLogger(self.__class__.__name__)
 
+        self.sync_toolchain = []
+        self.async_toolchain = []
+
         self._validate()
 
     # -------------------------
@@ -94,31 +96,31 @@ class SurfaceDriver(Driver, ABC):
         """
         if self.il_driver is not None:
             self.validate_link(
-                "Surface Driver",
-                "Internal Language Driver",
+                repr(self),
+                repr(self.il_driver),
                 self.output,
                 self.il_driver.input_,
             )
 
             self.validate_link(
-                "Internal Language Driver",
-                "Connection Driver",
+                repr(self.il_driver),
+                repr(self.conn_driver),
                 self.il_driver.output,
                 self.conn_driver.input_,
             )
 
         else:
             self.validate_link(
-                "Surface Driver",
-                "Connection Driver",
+                repr(self),
+                repr(self.conn_driver),
                 self.output,
                 self.conn_driver.input_,
             )
 
         if self.simplifier is not None:
             self.validate_link(
-                "Connection Driver",
-                "Simplifier",
+                repr(self.conn_driver),
+                repr(self.simplifier),
                 self.conn_driver.output,
                 self.simplifier.input_,
             )

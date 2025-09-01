@@ -11,13 +11,15 @@ the toolchain system:
 Each driver supports both synchronous and asynchronous methods, with subclasses
 required to implement at least one mode of operation.
 """
+
 from abc import ABC, abstractmethod
 from typing import Any
 
 from .utils import has_impl
 
-class Driver(ABC):
-    """Abstract base class for all drivers in the toolchain.
+
+class Driver:
+    """Base class for all drivers.
 
     Defines the required interface and core attributes for drivers, including their input/output domains and
     synchronous/asynchronous capabilities.
@@ -35,10 +37,29 @@ class Driver(ABC):
     is_sync: bool
     is_async: bool
 
+    def __repr__(self) -> str:
+        """Return a string representation of the driver.
+
+        Returns:
+            str: Representation including the class name, input, and output types.
+        """
+        return (
+            f"<{self.__class__.__name__}(input_={self.input_}, output={self.output})>"
+        )
+
+
+class ToolchainDriver(Driver, ABC):
+    """Abstract base class for all drivers in the toolchain.
+
+    Automatically detect async and sync support
+    """
+
+    def __init__(self):
+        self.check_async()
+
     @abstractmethod
     def check_async(self) -> None:
         """Validate that asynchronous or synchronous behavior is correctly implemented."""
-        ...
 
     def __repr__(self) -> str:
         """Return a string representation of the driver.
@@ -51,7 +72,7 @@ class Driver(ABC):
         )
 
 
-class ILDriver(Driver, ABC):
+class ILDriver(ToolchainDriver):
     """Abstract base class for internal language (IL) drivers.
 
     An ``ILDriver`` is responsible for converting the internal language of a dialect into an SQL-specific query.
@@ -63,10 +84,9 @@ class ILDriver(Driver, ABC):
 
         Updates the ``is_sync`` and ``is_async`` flags by checking if the subclass provides ``parse`` and/or ``aparse``.
         """
-        self.is_sync = has_impl(self.__class__, "parse")
-        self.is_async = has_impl(self.__class__, "aparse")
+        self.is_sync = has_impl(ILDriver, self.__class__, "parse")
+        self.is_async = has_impl(ILDriver, self.__class__, "aparse")
 
-    @abstractmethod
     def parse(self, internal_language: Any) -> str:
         """Synchronously parse an internal language representation.
 
@@ -76,8 +96,8 @@ class ILDriver(Driver, ABC):
         Returns:
             str: The SQL-specific query defined by the internal language.
         """
+        raise NotImplementedError
 
-    @abstractmethod
     async def aparse(self, internal_language: Any) -> str:
         """Asynchronously parse an internal language representation.
 
@@ -87,9 +107,10 @@ class ILDriver(Driver, ABC):
         Returns:
             str: The SQL-specific query defined by the internal language.
         """
+        raise NotImplementedError
 
 
-class ConnectionDriver(Driver, ABC):
+class ConnectionDriver(ToolchainDriver):
     """Abstract base class for database connection drivers.
 
     A ``ConnectionDriver`` defines the low-level API for connecting to, interacting with, and closing a database
@@ -104,25 +125,24 @@ class ConnectionDriver(Driver, ABC):
         ``connect``/``close``/``execute`` (sync) and ``aconnect``/``aclose``/``aexecute` (async).
         """
         self.is_sync = (
-            has_impl(self.__class__, "execute")
-            and has_impl(self.__class__, "connect")
-            and has_impl(self.__class__, "close")
+            has_impl(ConnectionDriver, self.__class__, "execute")
+            and has_impl(ConnectionDriver, self.__class__, "connect")
+            and has_impl(ConnectionDriver, self.__class__, "close")
         )
         self.is_async = (
-            has_impl(self.__class__, "aexecute")
-            and has_impl(self.__class__, "aconnect")
-            and has_impl(self.__class__, "aclose")
+            has_impl(ConnectionDriver, self.__class__, "aexecute")
+            and has_impl(ConnectionDriver, self.__class__, "aconnect")
+            and has_impl(ConnectionDriver, self.__class__, "aclose")
         )
 
-    @abstractmethod
     def connect(self) -> None:
         """Synchronously establish a database connection."""
+        raise NotImplementedError
 
-    @abstractmethod
     def close(self) -> None:
         """Synchronously close the database connection."""
+        raise NotImplementedError
 
-    @abstractmethod
     def execute(self, statement: str) -> Any:
         """Synchronously execute a SQL statement.
 
@@ -132,16 +152,16 @@ class ConnectionDriver(Driver, ABC):
         Returns:
             Any: The result returned by the database driver.
         """
+        raise NotImplementedError
 
-    @abstractmethod
     async def aconnect(self) -> None:
         """Asynchronously establish a database connection."""
+        raise NotImplementedError
 
-    @abstractmethod
     async def aclose(self) -> None:
         """Asynchronously close the database connection."""
+        raise NotImplementedError
 
-    @abstractmethod
     async def aexecute(self, statement: str) -> Any:
         """Asynchronously execute a SQL statement.
 
@@ -151,9 +171,10 @@ class ConnectionDriver(Driver, ABC):
         Returns:
             Any: The result returned by the database driver.
         """
+        raise NotImplementedError
 
 
-class Simplifier(Driver, ABC):
+class Simplifier(ToolchainDriver):
     """Abstract base class for result simplifiers in the toolchain.
 
     A Simplifier processes low-level results (e.g., raw database query results) into a higher-level, simplified
@@ -166,10 +187,9 @@ class Simplifier(Driver, ABC):
         Updates the ``is_sync`` and ``is_async`` flags by checking whether
         the subclass provides ``parse`` and/or ``aparse``.
         """
-        self.is_sync = has_impl(self.__class__, "parse")
-        self.is_async = has_impl(self.__class__, "aparse")
+        self.is_sync = has_impl(Simplifier, self.__class__, "parse")
+        self.is_async = has_impl(Simplifier, self.__class__, "aparse")
 
-    @abstractmethod
     def parse(self, low_level_result: Any) -> Any:
         """Synchronously simplify a low-level result.
 
@@ -179,8 +199,8 @@ class Simplifier(Driver, ABC):
         Returns:
             Any: The simplified result.
         """
+        raise NotImplementedError
 
-    @abstractmethod
     def aparse(self, low_level_result: Any) -> Any:
         """Asynchronously simplify a low-level result.
 
@@ -190,3 +210,4 @@ class Simplifier(Driver, ABC):
         Returns:
             Any: The simplified result.
         """
+        raise NotImplementedError

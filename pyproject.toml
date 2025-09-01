@@ -1,10 +1,18 @@
+# ------------------------
+# Build settings
+# ------------------------
+
 [build-system]
-requires = ["setuptools>=77.0.3", "wheel" ]
+requires = ["setuptools>=77.0.3", "wheel", "setuptools-scm>=8"]
 build-backend = "setuptools.build_meta"
 
+# ------------------------
+# Project Information
+# ------------------------
+
 [project]
-name = "coatlorm"
-version = "0.1.0"
+name = "plugorm"
+dynamic = ["version"]
 requires-python = ">=3.12"
 authors = [{ name = "Anagh Phanse", email = "anaghphanse@gmail.com" }]
 description = "A base framework for a plug-and-play ORM"
@@ -19,7 +27,6 @@ classifiers = [
 
     "Intended Audience :: Developers",
 
-
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
@@ -27,6 +34,10 @@ classifiers = [
     "Topic :: Database",
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
+
+# ------------------------
+# Setuptools Settings
+# ------------------------
 
 [tool.setuptools]
 package-dir = { "" = "src" }
@@ -36,12 +47,90 @@ where = ["src"]
 
 [project.optional-dependencies]
 dev = ["tox"]
+docs = ["sphinx>=7", "furo", "sphinx-autodoc-typehints"]
 
 [project.urls]
 Repository = "https://github.com/anaphan1/coatlorm.git"
 Issues = "https://github.com/anaphan1/coatlorm/issues"
 
+# ------------------------
+# Setuptools SCM Settings
+# ------------------------
+
 [tool.setuptools_scm]
-fallback_version = "0.0.1"
-version_scheme = "post-release"
-local_scheme = "no-local-version"
+version_file = "src/plugorm/_version.py"
+
+# -----------------------
+# Tox Settings
+# -----------------------
+
+[tool.tox]
+env_list = ["py312", "py313", "lint", "format", "format-fix", "mypy"]
+
+[tool.tox.env.py312]
+description = "Run pytest with coverage"
+usedevelop = true
+deps = [
+    "pytest",
+    "pytest-asyncio",
+    "pytest-cov",
+]
+commands = [
+    ["python", "--version"],
+    ["pytest"],
+]
+
+[tool.tox.env.py313]
+description = "Run pytest with coverage"
+usedevelop = true
+deps = [
+    "pytest",
+    "pytest-asyncio",
+    "pytest-cov",
+]
+commands = [
+    ["python", "--version"],
+    ["pytest"],
+]
+
+[tool.tox.env.lint]
+description = "Run flake8 linter"
+skip_install = true
+deps = ["flake8"]
+commands = [["flake8", "src/", "tests/"]]
+
+[tool.tox.env.format]
+description = "Check code formatting with black"
+skip_install = true
+deps = ["black"]
+commands = [["black", "--check", "src/", "tests/"]]
+
+[tool.tox.env."format-fix"]
+description = "Auto-fix formatting issues with black"
+skip_install = true
+deps = ["black"]
+commands = [["black", "src/", "tests/"]]
+
+[tool.tox.env.mypy]
+description = "Run mypy static type checks"
+skip_install = true
+deps = ["mypy"]
+commands = [["mypy", "src/"]]
+
+# ------------------------
+# Linter Settings
+# ------------------------
+
+[tool.flake8]
+# black's line length is 88
+max-line-length = 88
+# black ignores E203 and W503 and has its own handling of line length (E501)
+extend-ignore = ["E203", "W503", "E501"]
+
+# ------------------------
+# Pytest Settings
+# ------------------------
+
+[tool.pytest.ini_options]
+addopts = "--cov=src --cov-report=term-missing"
+asyncio_mode = "auto"

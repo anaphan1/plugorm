@@ -14,24 +14,33 @@ LoggerMixin:
 """
 
 import logging
-from abc import ABC
 from typing import Any
 
 
-def has_impl(subclass: type[ABC], method_name: str) -> bool:
-    """Checks whether a subclass implements a given abstract method.
+def has_impl(baseclass: type, subclass: type, method_name: str) -> bool:
+    """Checks whether a subclass implements a given method.
 
-    Determines if the provided method name has been implemented by inspecting the subclass's ``__abstractmethods__``
-    attribute.
+    Determines if the provided method name has been implemented by checking their identities
 
     Args:
-        subclass (type[ABC]): The subclass to check.
-        method_name (str): The abstract method name to verify.
+        baseclass (type): The baseclass of the subclass.
+        subclass (type): The subclass to check.
+        method_name (str): The method name to verify.
 
     Returns:
         bool: ``True`` if the method is implemented, ``False`` otherwise.
+
+    Raises:
+        AttributeError: If the baseclass does not implement the method
     """
-    return method_name not in getattr(subclass, "__abstractmethods__", set())
+    if not hasattr(baseclass, method_name):
+        raise AttributeError(
+            f"Base class {baseclass.__name__} has no method '{method_name}'"
+        )
+
+    base_method = getattr(baseclass, method_name)
+    sub_method = getattr(subclass, method_name, None)
+    return sub_method is not None and sub_method != base_method
 
 
 def short_repr(value: Any, max_len: int = 120) -> str:
