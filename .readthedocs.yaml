@@ -16,4 +16,4 @@ python:
   install:
     - method: pip
       path: .
-      extras: docs
+      extras: ["docs"]
