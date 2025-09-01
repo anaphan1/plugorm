@@ -42,6 +42,7 @@ jobs:
     needs: release-build
     environment:
       name: pypi  # Make sure this environment has a secret PYPI_API_TOKEN
+      url: https://pypi.org/project/plugorm/
     steps:
       - name: Download build artifacts
         uses: actions/download-artifact@v4
