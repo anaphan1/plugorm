@@ -54,7 +54,7 @@ jobs:
 
       - name: Lint with flake8
         run: |
-          flake8 src/ tests/ --config pyproject.toml
+          flake8 src/ tests/ --max-line-length=88 --extend-ignore=E203,W503,E501
 
       - name: Type check with mypy
         run: |
