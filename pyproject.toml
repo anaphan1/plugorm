@@ -21,7 +21,7 @@ license = "MIT"
 license-files = ["LICENSE.txt"]
 keywords = ["orm", "sql", "python"]
 classifiers = [
-    "Development Status :: 3 - Alpha",
+    "Development Status :: 5 - Production/Stable",
 
     "Framework :: AsyncIO",
 
