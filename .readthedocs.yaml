@@ -9,6 +9,7 @@ build:
       - git reset --hard HEAD
       - git clean -fdx
 
+
 sphinx:
   configuration: docs/source/conf.py
 
