@@ -26,7 +26,7 @@ It unifies **parsing**, **execution**, and **simplification** into a single pipe
 - **Errors with Context**  
   Dedicated exceptions for link validation, parsing failures, execution errors, async/sync mismatches, and more.
 
----
+--- 
 
 ## 🚀 Installation
 
